@@ -27,76 +27,88 @@ class DateTimeClock
 
 	updateClock(thisDateTimeClock)
 		{
-		// CHECKING IF THE WINDOW/TAB IS VISIBLE/ACTIVE
-		if (!document.hidden)
+		try
 			{
-			// GETTING THE CURRENT DATE AND TIME
-			var today = new Date(thisDateTimeClock.myTimeStamp);
+			// CHECKING IF THE WINDOW/TAB IS VISIBLE/ACTIVE
+			if (!document.hidden)
+				{
+				// GETTING THE CURRENT DATE AND TIME
+				var today = new Date(thisDateTimeClock.myTimeStamp);
 
-			// GETTING THE CURRENT TIME (HOURS)
-			var hours = today.getHours();
-			hours = ("0" + hours).slice(-2);
+				// GETTING THE CURRENT TIME (HOURS)
+				var hours = today.getHours();
+				hours = ("0" + hours).slice(-2);
 
-			// GETTING THE CURRENT TIME (MINUTES)
-			var minutes = today.getMinutes();
-			minutes = ("0" + minutes).slice(-2);
+				// GETTING THE CURRENT TIME (MINUTES)
+				var minutes = today.getMinutes();
+				minutes = ("0" + minutes).slice(-2);
 
-			// UPDATING THE BARTIME WITH THE CURRENT DATE AND TIME
-			thisDateTimeClock.myLabel.innerHTML = this.days[today.getDay()] + " " + today.getDate() + " " + this.months[today.getMonth()] + ".&nbsp;&nbsp;" + hours + ":" + minutes;
+				// UPDATING THE BARTIME WITH THE CURRENT DATE AND TIME
+				thisDateTimeClock.myLabel.innerHTML = this.days[today.getDay()] + " " + today.getDate() + " " + this.months[today.getMonth()] + ".&nbsp;&nbsp;" + hours + ":" + minutes;
 
-			// UPDATING THE TIMESTAMP VALUE
-			thisDateTimeClock.myTimeStamp = thisDateTimeClock.myTimeStamp + 1000;
+				// UPDATING THE TIMESTAMP VALUE
+				thisDateTimeClock.myTimeStamp = thisDateTimeClock.myTimeStamp + 1000;
 
-			// UPDATING THE TIMESTAMP CHECKER VALUE (THE ONE USING THE DEVICE TIMESTAMP) FOR LATER USE
-			thisDateTimeClock.myTimeStampChecker = thisDateTimeClock.myTimeStampChecker + 1000;
+				// UPDATING THE TIMESTAMP CHECKER VALUE (THE ONE USING THE DEVICE TIMESTAMP) FOR LATER USE
+				thisDateTimeClock.myTimeStampChecker = thisDateTimeClock.myTimeStampChecker + 1000;
+				}
+			}
+			catch(err)
+			{
 			}
 		}
 
 	init()
 		{
-		// SETTING THE CURRENT INSTANCE FOR LATER USE
-		var thisDateTimeClock = this;
-
-		// UPDATING THE CLOCK
-		thisDateTimeClock.updateClock(thisDateTimeClock);
-
-		// SETTING THE CLOCK INTERVAL
-		thisDateTimeClock.myTimer = setInterval(function(){thisDateTimeClock.updateClock(thisDateTimeClock)},1000);
-
-		// SETTING THE INTERVAL FOR CHECKING THE IDLE COUNTER
-		window.addEventListener("blur", function()
+		try
 			{
-			// WHEN THE WINDOW IS BLUR, THE MUSTUPDATE VALUE MUST BE TRUE
-			thisDateTimeClock.mustUpdate = true;
+			// SETTING THE CURRENT INSTANCE FOR LATER USE
+			var thisDateTimeClock = this;
 
-			// CLEARING THE CLOCK INTERVAL
-			clearInterval(thisDateTimeClock.myTimer);
-			});
+			// UPDATING THE CLOCK
+			thisDateTimeClock.updateClock(thisDateTimeClock);
 
-		// SETTING THE INTERVAL FOR CHECKING THE IDLE COUNTER
-		window.addEventListener("focus", function()
-			{
-			// CHECKING IF THE CLOCK VALUE MUST BE UPDATED
-			if (thisDateTimeClock.mustUpdate==true)
+			// SETTING THE CLOCK INTERVAL
+			thisDateTimeClock.myTimer = setInterval(function(){thisDateTimeClock.updateClock(thisDateTimeClock)},1000);
+
+			// SETTING THE INTERVAL FOR CHECKING THE IDLE COUNTER
+			window.addEventListener("blur", function()
 				{
-				// GETTING THE NEW DEVICE TIMESTAMP
-				var newTime = Date.now();
+				// WHEN THE WINDOW IS BLUR, THE MUSTUPDATE VALUE MUST BE TRUE
+				thisDateTimeClock.mustUpdate = true;
 
-				// ADDING ALL THE MILLISECONDS THAT PASSED SINCE THE LAST TIME THE WINDOWS WAS FOCUSED
-				thisDateTimeClock.myTimeStamp = thisDateTimeClock.myTimeStamp + (newTime - thisDateTimeClock.myTimeStampChecker);
+				// CLEARING THE CLOCK INTERVAL
+				clearInterval(thisDateTimeClock.myTimer);
+				});
 
-				// UPDATING THE TIMESTAMP CHECKER
-				thisDateTimeClock.myTimeStampChecker = newTime;
+			// SETTING THE INTERVAL FOR CHECKING THE IDLE COUNTER
+			window.addEventListener("focus", function()
+				{
+				// CHECKING IF THE CLOCK VALUE MUST BE UPDATED
+				if (thisDateTimeClock.mustUpdate==true)
+					{
+					// GETTING THE NEW DEVICE TIMESTAMP
+					var newTime = Date.now();
 
-				// UPDATING THE CLOCK
-				thisDateTimeClock.updateClock(thisDateTimeClock);
+					// ADDING ALL THE MILLISECONDS THAT PASSED SINCE THE LAST TIME THE WINDOWS WAS FOCUSED
+					thisDateTimeClock.myTimeStamp = thisDateTimeClock.myTimeStamp + (newTime - thisDateTimeClock.myTimeStampChecker);
 
-				// SETTING THE CLOCK INTERVAL
-				thisDateTimeClock.myTimer = setInterval(function(){thisDateTimeClock.updateClock(thisDateTimeClock)},1000);
+					// UPDATING THE TIMESTAMP CHECKER
+					thisDateTimeClock.myTimeStampChecker = newTime;
 
-				// WHEN THE WINDOW IS FOCUSED, THE MUSTUPDATE VALUE MUST BE FALSE
-				thisDateTimeClock.mustUpdate = false;
-				}
-			});
+					// UPDATING THE CLOCK
+					thisDateTimeClock.updateClock(thisDateTimeClock);
+
+					// SETTING THE CLOCK INTERVAL
+					thisDateTimeClock.myTimer = setInterval(function(){thisDateTimeClock.updateClock(thisDateTimeClock)},1000);
+
+					// WHEN THE WINDOW IS FOCUSED, THE MUSTUPDATE VALUE MUST BE FALSE
+					thisDateTimeClock.mustUpdate = false;
+					}
+				});
+			}
+			catch(err)
+			{
+			}
 		}
 	}
